@@ -30,6 +30,7 @@ class SystemPerformanceManager(object):
 	def __init__(self):
 		configUtil = ConfigUtil()
 		
+		# Retrieve the properties pollRate, locationID from config utils
 		self.pollRate = \
 			configUtil.getInteger(\
 				section= ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.POLL_CYCLES_KEY, \
@@ -46,6 +47,7 @@ class SystemPerformanceManager(object):
 
 		self.dataMsgListener = None
 
+		# Set Scheduler parameters
 		self.scheduler = BackgroundScheduler()
 		self.scheduler.add_job(self.handleTelemetry, 'interval', seconds = self.pollRate)
 
@@ -54,6 +56,7 @@ class SystemPerformanceManager(object):
 			
 
 	def handleTelemetry(self):
+		# Get Cpu & Memory Usage from the Classes
 		cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
 		memUtilPct = self.memUtilTask.getTelemetryValue()
 
@@ -67,6 +70,7 @@ class SystemPerformanceManager(object):
 		
 		logging.info("Starting SystemPerformanceManager...")
 
+		# Start Scheduler
 		if not self.scheduler.running:
 			self.scheduler.start()
 			logging.info("Started SystemPerformanceManager.")
@@ -77,6 +81,7 @@ class SystemPerformanceManager(object):
 		logging.info("Stopping SystemPerformanceManager...")
 
 		try:
+			# Shutdown Scheduler
 			self.scheduler.shutdown()
 			logging.info("Stopped systemPerformanceManager")
 		except:

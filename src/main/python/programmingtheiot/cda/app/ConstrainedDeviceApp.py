@@ -32,7 +32,7 @@ class ConstrainedDeviceApp():
 		"""
 		logging.info("Initializing CDA...")
 		
-		# TODO: implementation here
+		# Created an instance of SystemPerformanceManager
 		self.sysPerMgr = SystemPerformanceManager()
 		
 
@@ -43,7 +43,7 @@ class ConstrainedDeviceApp():
 		"""
 		logging.info("Starting CDA...")
 		
-		# TODO: implementation here
+		# Calling startManager method from the SystemPerformanceManager class
 		self.sysPerMgr.startManager()
 		
 		logging.info("CDA started.")
@@ -55,7 +55,7 @@ class ConstrainedDeviceApp():
 		"""
 		logging.info("CDA stopping...")
 		
-		# TODO: implementation here
+		# Calling stopManager method from the SystemPerformanceManager class
 		self.sysPerMgr.stopManager()
 		
 		logging.info("CDA stopped with exit code %s.", str(code))

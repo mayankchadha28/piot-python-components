@@ -12,9 +12,12 @@ Configuration and other constants for use when looking up
 configuration values or when default values may be needed.
  
 """
+
+# Using the relative path for the PiotConfig.props file
 from pathlib import Path
 __dirname = Path.cwd().parents[6] / 'config' / 'PiotConfig.props'
 print(__dirname)
+
 # path = Path("/home/mayank/ConnectedDevices/python-components/config/PiotConfig.props")
 # if path.exists():
 #     # print("Config File Found")
@@ -203,7 +206,6 @@ CDA_SYSTEM_PERF_MSG_RESOURCE          = PRODUCT_NAME + '/' + CONSTRAINED_DEVICE 
 # the directory structure for python-components
 
 # NOTE: You will need to update this!!
-# DEFAULT_CONFIG_FILE_NAME = '${path}/PiotConfig.props'
 DEFAULT_CONFIG_FILE_NAME = __dirname
 
 DEFAULT_CRED_FILE_NAME   = '../../../../../cred/PiotCred.props'
