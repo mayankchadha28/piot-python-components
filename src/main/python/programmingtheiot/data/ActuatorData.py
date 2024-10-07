@@ -13,38 +13,59 @@ from programmingtheiot.data.BaseIotData import BaseIotData
 
 class ActuatorData(BaseIotData):
 	"""
-	Shell representation of class for student implementation.
+	Class implementation for setting the data containers for simulating actuator data
 	
 	"""
 
+
 	def __init__(self, typeID: int = ConfigConst.DEFAULT_ACTUATOR_TYPE, name = ConfigConst.NOT_SET, d = None):
 		super(ActuatorData, self).__init__(name = name, typeID = typeID, d = d)
+		
+		#Defining class variables
+		self.value = ConfigConst.DEFAULT_VAL
+		self.command = ConfigConst.DEFAULT_COMMAND
+		self.stateData = ""
+
+
 		pass
 	
 	def getCommand(self) -> int:
-		pass
+		return self.command
 	
 	def getStateData(self) -> str:
-		pass
+		return self.stateData
 	
 	def getValue(self) -> float:
-		pass
+		return self.value
 	
 	def isResponseFlagEnabled(self) -> bool:
 		return False
 	
 	def setCommand(self, command: int):
-		pass
+		#Set command values & Timestamp
+		self.command = command
+		self.updateTimeStamp()
+
 	
 	def setAsResponse(self):
 		pass
 		
 	def setStateData(self, stateData: str):
-		pass
+		if stateData:
+			self.stateData = stateData
+			self.updateTimeStamp()
+
 	
 	def setValue(self, val: float):
-		pass
+		self.value = val
+		self.updateTimeStamp()
 		
+	# Private method to update variables
 	def _handleUpdateData(self, data):
-		pass
+		#verifying instances and updating variables if not then its invoked by base class
+		if data and isinstance(data, ActuatorData):
+			self.command = data.getCommand()
+			self.stateData = data.getStateData()
+			self.value = data.getValue()
+			self.isResponse = data.isResponseFlagEnabled()
 		

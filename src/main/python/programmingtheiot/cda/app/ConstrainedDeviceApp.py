@@ -12,7 +12,11 @@
 
 import logging
 
+import programmingtheiot.common.ConfigConst as ConfigConst
+from programmingtheiot.common.ConfigUtil import ConfigUtil
+
 from programmingtheiot.cda.system.SystemPerformanceManager import SystemPerformanceManager
+from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
 
 from time import sleep
 
@@ -31,9 +35,11 @@ class ConstrainedDeviceApp():
 		@param path The name of the resource to apply to the URI.
 		"""
 		logging.info("Initializing CDA...")
+
+		self.dataMgr = DeviceDataManager()
 		
 		# Created an instance of SystemPerformanceManager
-		self.sysPerMgr = SystemPerformanceManager()
+		# self.sysPerMgr = SystemPerformanceManager()
 		
 
 	def startApp(self):
@@ -44,7 +50,8 @@ class ConstrainedDeviceApp():
 		logging.info("Starting CDA...")
 		
 		# Calling startManager method from the SystemPerformanceManager class
-		self.sysPerMgr.startManager()
+		# self.sysPerMgr.startManager()
+		self.dataMgr.startManager()
 		
 		logging.info("CDA started.")
 
@@ -56,7 +63,8 @@ class ConstrainedDeviceApp():
 		logging.info("CDA stopping...")
 		
 		# Calling stopManager method from the SystemPerformanceManager class
-		self.sysPerMgr.stopManager()
+		# self.sysPerMgr.stopManager()
+		self.dataMgr.stopManager()
 		
 		logging.info("CDA stopped with exit code %s.", str(code))
 		
@@ -77,9 +85,18 @@ def main():
 	"""
 	cda = ConstrainedDeviceApp()
 	cda.startApp()
+
+	runForever = ConfigUtil().getBoolean(ConfigConst.CONSTRAINED_DEVICE, ConfigConst.RUN_FOREVER_KEY)
+
+	if runForever:
+		while(True):
+			sleep(5)
+	else:
+		sleep(65)
+		cda.stopApp(0)
 	
 	# run for 10 seconds - this can be changed as needed
-	sleep(10)
+	# sleep(10)
 	
 	# optionally stop the app - this can be removed if needed
 	cda.stopApp(0)

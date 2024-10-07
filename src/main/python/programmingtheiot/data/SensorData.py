@@ -13,13 +13,18 @@ from programmingtheiot.data.BaseIotData import BaseIotData
 
 class SensorData(BaseIotData):
 	"""
-	Shell representation of class for student implementation.
+	Class implementation for simulating sensor data
 	
 	"""
 		
-	def __init__(self, typeID: int = ConfigConst.DEFAULT_SENSOR_TYPE, name = ConfigConst.NOT_SET, d = None):
+	def __init__(self, typeID: int = ConfigConst.DEFAULT_SENSOR_TYPE, \
+			  name = ConfigConst.NOT_SET, d = None):
+		
 		super(SensorData, self).__init__(name = name, typeID = typeID, d = d)
-		pass
+		
+		#set values for the variables
+		self.value = ConfigConst.DEFAULT_VAL
+
 	
 	def getSensorType(self) -> int:
 		"""
@@ -30,10 +35,14 @@ class SensorData(BaseIotData):
 		return self.sensorType
 	
 	def getValue(self) -> float:
-		pass
+		return self.value
 	
 	def setValue(self, newVal: float):
-		pass
+		#setting values and updating timestamp
+		self.value = newVal
+		self.updateTimeStamp()
 		
+	#Private method to handle update data
 	def _handleUpdateData(self, data):
-		pass
+		if data and isinstance(data, SensorData):
+			self.value = data.getValue()
