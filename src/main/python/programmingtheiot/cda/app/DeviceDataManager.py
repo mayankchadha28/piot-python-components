@@ -31,7 +31,7 @@ from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 
 class DeviceDataManager(IDataMessageListener):
 	"""
-	Shell representation of class for student implementation.
+	Main class that handles all the data
 	
 	"""
 	
