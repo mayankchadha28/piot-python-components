@@ -20,6 +20,8 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
+from importlib import import_module
+
 class ActuatorAdapterManager(object):
 	"""
 		Main class that instantiates all actuators - 
@@ -98,3 +100,25 @@ class ActuatorAdapterManager(object):
 			self.humidifierActuator = HumidifierActuatorSimTask()
 
 			self.hvacActuator = HvacActuatorSimTask()
+		else:
+			# Emulator Functionality
+			
+			# Humidifier
+			hueModule = import_module('programmingtheiot.cda.emulated.HumidifierEmulatorTask', \
+							 'HumidifierEmulatedTask')
+			hueClass = getattr(hueModule, 'HumidifierEmulatorTask')
+			self.humidifierActuator = hueClass()
+
+			# HVAC
+			hveModule = import_module('programmingtheiot.cda.emulated.HvacEmulatorTask', \
+							 'HvacEmulatorTask')
+			hveClass = getattr(hveModule, 'HvacEmulatorTask')
+			self.hvacActuator = hveClass()
+
+			# LED
+			leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', \
+								   'LedDisplayEmulatorTask')
+			leClass = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
+			self.ledDisplayActuator = leClass()
+
+

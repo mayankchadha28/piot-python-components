@@ -18,12 +18,27 @@ from pisense import SenseHAT
 
 class HumiditySensorEmulatorTask(BaseSensorSimTask):
 	"""
-	Shell representation of class for student implementation.
+	This class emulates the Humidity Sensor using the SenseHat
 	
 	"""
 
 	def __init__(self, dataSet = None):
-		pass
+		super(\
+			HumiditySensorEmulatorTask, self).__init__(\
+				name= ConfigConst.HUMIDITY_SENSOR_NAME, \
+					typeID= ConfigConst.HUMIDITY_SENSOR_TYPE)
+		
+		enableEmulator = \
+			ConfigUtil().getBoolean(\
+				ConfigConst.CONSTRAINED_DEVICE, ConfigConst.ENABLE_EMULATOR_KEY)
+		
+		self.sh = SenseHAT(emulate = enableEmulator)
 	
 	def generateTelemetry(self) -> SensorData:
-		pass
+		sensorData = SensorData(name= self.getName(), typeID = self.getTypeID())
+		sensorVal = self.sh.environ.humidity
+
+		sensorData.setValue(sensorVal)
+		self.latestSensorData = sensorData
+
+		return sensorData

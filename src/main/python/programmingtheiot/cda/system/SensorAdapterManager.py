@@ -23,6 +23,8 @@ from programmingtheiot.cda.sim.HumiditySensorSimTask import HumiditySensorSimTas
 from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensorSimTask
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
 
+from importlib import import_module
+
 class SensorAdapterManager(object):
 	"""
 	Main class that instantiates all the sensors by calling SimTasks and 
@@ -174,6 +176,28 @@ class SensorAdapterManager(object):
 			self.humidityAdapter = HumiditySensorSimTask(dataSet= humidityData)
 			self.pressureAdapter = PressureSensorSimTask(dataSet= pressureData)
 			self.tempAdapter = TemperatureSensorSimTask(dataSet= tempData)
+
+		else: 
+			# Humidity
+			heModule = import_module('programmingtheiot.cda.emulated.HumiditySensorEmulatorTask', \
+							'HumiditySensorEmulatorTask')
+			heClass = getattr(heModule, 'HumiditySensorEmulatorTask')
+			self.humidityAdapter= heClass()
+
+			# Pressure
+			peModule = import_module('programmingtheiot.cda.emulated.PressureSensorEmulatorTask', \
+							'PressureSensorEmulatorTask')
+			peClass = getattr(peModule, 'PressureSensorEmulatorTask')
+			self.pressureAdapter = peClass()
+			
+			# Temperature
+			teModule = import_module('programmingtheiot.cda.emulated.TemperatureSensorEmulatorTask', \
+							'TemperatureSensorEmulatorTask')
+			teClass = getattr(teModule, 'TemperatureSensorEmulatorTask')
+			self.tempAdapter = teClass()
+			
+			
+			
 
 
 		
