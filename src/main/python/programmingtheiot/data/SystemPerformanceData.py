@@ -13,7 +13,7 @@ from programmingtheiot.data.BaseIotData import BaseIotData
 
 class SystemPerformanceData(BaseIotData):
 	"""
-	Class implementation for simulating system performance data
+	Class implementation for storing system performance data
 	
 	"""
 	DEFAULT_VAL = 0.0
