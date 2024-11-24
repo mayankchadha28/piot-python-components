@@ -31,7 +31,7 @@ from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 
 class DeviceDataManager(IDataMessageListener):
 	"""
-	Shell representation of class for student implementation.
+	Main Manager class that handles all operations
 	
 	"""
 	
@@ -48,6 +48,10 @@ class DeviceDataManager(IDataMessageListener):
 				section= ConfigConst.CONSTRAINED_DEVICE, key= ConfigConst.ENABLE_SENSING_KEY
 				)
 		
+		self.enableMqttClient = \
+			self.configUtil.getBoolean(\
+				section= ConfigConst.CONSTRAINED_DEVICE, key= ConfigConst.ENABLE_MQTT_CLIENT_KEY)
+		
 		self.enableActuation = True
 
 		self.sysPerfMgr = None
@@ -57,6 +61,10 @@ class DeviceDataManager(IDataMessageListener):
 		self.mqttClient = None
 		self.coapClient = None
 		self.coapServer = None
+
+		if self.enableMqttClient:
+			self.mqttClient = MqttClientConnector()
+			self.mqttClient.setDataMessageListener(self)
 
 		if self.enableSystemPerf:
 			self.sysPerfMgr = SystemPerformanceManager()
@@ -223,6 +231,11 @@ class DeviceDataManager(IDataMessageListener):
 		if self.sensorAdapterMgr:
 			self.sensorAdapterMgr.startManager()
 
+		if self.mqttClient:
+			self.mqttClient.connectClient()
+			self.mqttClient.subscribeToTopic(ResourceNameEnum.CDA_MGMT_STATUS_CMD_RESOURCE, \
+									callback = None, qos = ConfigConst.DEFAULT_QOS)
+
 		logging.info("Started DeviceDataManager.")
 		
 	def stopManager(self):
@@ -233,6 +246,10 @@ class DeviceDataManager(IDataMessageListener):
 
 		if self.sensorAdapterMgr:
 			self.sensorAdapterMgr.stopManager()
+
+		if self.mqttClient:
+			self.mqttClient.unsubscribeFromTopic(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE)
+			self.mqttClient.disconnectClient()
 
 		logging.info("Stopped DeviceDataManager.")
 		
