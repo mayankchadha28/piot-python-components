@@ -52,6 +52,10 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getBoolean(\
 				section= ConfigConst.CONSTRAINED_DEVICE, key= ConfigConst.ENABLE_MQTT_CLIENT_KEY)
 		
+		self.enableCoapClient = \
+			self.configUtil.getBoolean(\
+				section= ConfigConst.CONSTRAINED_DEVICE, key= ConfigConst.ENABLE_COAP_CLIENT_KEY)
+		
 		self.enableActuation = True
 
 		self.sysPerfMgr = None
@@ -65,6 +69,10 @@ class DeviceDataManager(IDataMessageListener):
 		if self.enableMqttClient:
 			self.mqttClient = MqttClientConnector()
 			self.mqttClient.setDataMessageListener(self)
+
+		if self.enableCoapClient:
+			self.coapClient = CoapClientConnector(dataMsgListener= self)
+			self.coapClient.setDataMessageListener(self)
 
 		if self.enableSystemPerf:
 			self.sysPerfMgr = SystemPerformanceManager()
