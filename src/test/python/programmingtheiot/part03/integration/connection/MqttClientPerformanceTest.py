@@ -46,6 +46,7 @@ class MqttClientConnectorTest(unittest.TestCase):
 		startTime = time.time_ns()
 		
 		self.assertTrue(self.mqttClient.connectClient())
+		time.sleep(5)
 		self.assertTrue(self.mqttClient.disconnectClient())
 		
 		endTime = time.time_ns()

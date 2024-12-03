@@ -8,11 +8,13 @@
 #
 
 import logging
+import ssl
 import paho.mqtt.client as mqttClient
 
 import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.common.ConfigUtil import ConfigUtil
+from programmingtheiot.data.DataUtil import DataUtil
 from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 
@@ -20,7 +22,7 @@ from programmingtheiot.cda.connection.IPubSubClient import IPubSubClient
 
 class MqttClientConnector(IPubSubClient):
 	"""
-	MQTT Client Handler Class to handle all mqtt data
+	MQTT Client Handler Class to handle all mqtt data.
 	
 	"""
 
@@ -56,7 +58,23 @@ class MqttClientConnector(IPubSubClient):
 			self.config.getInteger(\
 				ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.DEFAULT_QOS_KEY, ConfigConst.DEFAULT_QOS)
 		
+		self.enableEncryption = \
+			self.config.getBoolean(\
+				ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.ENABLE_CRYPT_KEY)
+		
+		self.pemFileName = \
+			self.config.getProperty(\
+				ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.CERT_FILE_KEY)
+		
+		self.enableMqttClient = \
+			self.config.getBoolean(\
+				ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.ENABLE_MQTT_CLIENT_KEY)
+		
 		self.mqttClient = None
+
+		if self.enableMqttClient:
+			self.mqttClient = MqttClientConnector()
+			self.mqttClient.setDataMessageListener(self)
 
 
 		if not clientID: 
@@ -77,12 +95,27 @@ class MqttClientConnector(IPubSubClient):
 		if not self.mqttClient:
 			self.mqttClient = mqttClient.Client(client_id = self.clientID, clean_session = True)
 
+			# encryption
+			try:
+				if self.enableEncryption:
+					logging.info("Enabling TLS encryption...")
+
+					self.port = \
+						self.config.getInteger(\
+							ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.SECURE_PORT_KEY, \
+								  ConfigConst.DEFAULT_MQTT_SECURE_PORT)
+
+					self.mqttClient.tls_set(self.pemFileName, tls_version = ssl.PROTOCOL_TLS_CLIENT)
+			except:
+				logging.warning("Failed to enable TLS encryption. Using unencrypted connection.")
+
 			self.mqttClient.on_connect = self.onConnect
 			self.mqttClient.on_disconnect = self.onDisconnect
 			self.mqttClient.on_message = self.onMessage
 			self.mqttClient.on_publish = self.onPublish
 			self.mqttClient.on_subscribe = self.onSubscribe
 
+			
 		if not self.mqttClient.is_connected():
 			logging.info("MQTT client connecting to broker at host: "+ self.host)
 
@@ -103,12 +136,21 @@ class MqttClientConnector(IPubSubClient):
 
 			return True
 		else:
-			logging.warnning('MQTT client already disconnected. Ignoring')
+			logging.warning('MQTT client already disconnected. Ignoring')
 
 			return False
 		
 	def onConnect(self, client, userdata, flags, rc):
 		logging.info("MQTT client connected to broker: "+ str(client))
+
+		self.mqttClient.subscribe(\
+			topic= ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value, qos = self.defaultQos)
+		
+		self.mqttClient.message_callback_add(\
+			sub = ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value, \
+			callback = self.onActuatorCommandMessage)
+		
+		# self.mqttClient.
 	
 		
 		
@@ -142,7 +184,16 @@ class MqttClientConnector(IPubSubClient):
 		@param userdata The user reference context.
 		@param msg The message context, including the embedded payload.
 		"""
-		pass
+		logging.info('[Callback] Actuator command message received. Topic: %s.', msg.topic)
+
+		if self.dataMsgListener:
+			try:
+				# all data encoded in UTF-8
+				actuatorData = DataUtil().jsonToActuatorData(msg.payload.decode('utf-8'))
+
+				self.dataMsgListener.handleActuatorCommandMessage(actuatorData)
+			except:
+				logging.exception("Failed to convert incoming actuation command payload to Actuatordata: ")
 	
 	def publishMessage(self, resource: ResourceNameEnum = None, msg: str = None, qos: int = ConfigConst.DEFAULT_QOS):
 		# Check validity of resource (topic)
@@ -161,7 +212,7 @@ class MqttClientConnector(IPubSubClient):
 
 		# publish message, and wait for publish to complete before returning
 		msgInfo = self.mqttClient.publish(topic = resource.value, payload = msg, qos = qos)
-		msgInfo.wait_for_publish()
+		# msgInfo.wait_for_publish()
 		
 		return True
 	

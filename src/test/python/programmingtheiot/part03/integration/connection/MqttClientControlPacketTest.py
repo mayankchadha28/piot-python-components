@@ -27,32 +27,71 @@ class MqttClientControlPacketTest(unittest.TestCase):
 		# 
 		# The clientID shown below is an example only - please use your own
 		# unique value for this test
-	
-		self.mcc = MqttClientConnector(clientID="TestClient")
+
 		
 	def setUp(self):
-		pass
+		self.mcc = MqttClientConnector(clientID="MqttClientControlPacketTest")
 
 	def tearDown(self):
 		pass
 
 	def testConnectAndDisconnect(self):
-	    # TODO: implement this test
-		delay = self.cfg.getInteger(ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.KEEP_ALIVE_KEY, ConfigConst.DEFAULT_KEEP_ALIVE)
-		self.mcc.connectClient()
-		sleep(delay +5)
-		self.mcc.disconnectClient()
-	
+
+		self.assertTrue(self.mcc.connectClient())
+		sleep(5)
+		self.assertTrue(self.mcc.disconnectClient())
+
+		logging.info("Mqtt Connect and Disconnect")
+
 	
 	def testServerPing(self):
-		# TODO: implement this test
-		pass
+		delay = self.cfg.getInteger(ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.KEEP_ALIVE_KEY, ConfigConst.DEFAULT_KEEP_ALIVE)
+		self.assertTrue(self.mcc.connectClient())
+		logging.info("Connected to MQTT Broker")
+		sleep(delay +5)
+		self.assertTrue(self.mcc.disconnectClient())
+		logging.info("Server ping triggered")
+		
 	
 	def testPubSub(self):
-		# TODO: implement this test
-		# 
-		# IMPORTANT: be sure to use QoS 1 and 2 to see ALL control packets
-		pass	
+		self.assertTrue(self.mcc.connectClient())
+		qos_0 = 0
+		qos_1 = 1
+		qos_2 = 2
+
+		sensorData = SensorData()
+		payload = DataUtil().sensorDataToJson(sensorData)
+
+		self.mcc.publishMessage(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								  msg = payload, qos = qos_0)
+		logging.info("Mqtt Message published with QOS 0")
+		self.mcc.publishMessage(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								  msg = payload, qos = qos_1)
+		logging.info("Mqtt Message published with QOS 1")
+		self.mcc.publishMessage(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								  msg = payload, qos = qos_2)
+		logging.info("Mqtt Message published with QOS 2")
+
+		logging.info("MQTT Message Subscribed with QOS 0")
+		self.mcc.subscribeToTopic(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								qos = qos_0)
+		
+		logging.info("MQTT Message Subscribed with QOS 0")
+		self.mcc.subscribeToTopic(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								qos = qos_1)
+		
+		logging.info("MQTT Message Subscribed with QOS 0")
+		self.mcc.subscribeToTopic(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, \
+								qos = qos_2)
+		
+		self.mcc.unsubscribeFromTopic(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE)
+
+		sleep(5)
+		
+		self.assertTrue(self.mcc.disconnectClient())
+
+
+		
 	
 if __name__ == "__main__":
 	unittest.main()

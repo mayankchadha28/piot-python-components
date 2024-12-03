@@ -101,9 +101,6 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getFloat(\
 				ConfigConst.CONSTRAINED_DEVICE, ConfigConst.TRIGGER_HVAC_TEMP_CEILING_KEY)
 		
-
-
-		
 		
 	def getLatestActuatorDataResponseFromCache(self, name: str = None) -> ActuatorData:
 		"""
@@ -201,7 +198,17 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		if data:
 			logging.debug("INcoming sensor data received(from sensor manager):", str(data))
+			
+			# Optional for sensor data analysis
 			self._handleSensorDataAnalysis(data)
+
+			# sensordata to json
+			jsonData = DataUtil().sensorDataToJson(data = data)
+
+			# pass data to _handleUpstreamTransmission 
+			self._handleUpstreamTransmission(\
+				resourceName= ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg = jsonData)
+
 			return True
 		else:
 			logging.warning("Incoming sensor data is invalid (null). Ignoring.")
@@ -218,6 +225,14 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		if data:
 			logging.debug("Incoming system performance message received (from sys perf manager):"+ str(data))
+			
+			# sensordata to json
+			jsonData = DataUtil().systemPerformanceDataToJson(data = data)
+
+			# pass data to _handleUpstreamTransmission 
+			self._handleUpstreamTransmission(\
+				resourceName= ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg = jsonData)
+			
 			return True
 		else:
 			logging.warning("Incoming system performance data is invalid (null). Ignoring.")
@@ -241,8 +256,8 @@ class DeviceDataManager(IDataMessageListener):
 
 		if self.mqttClient:
 			self.mqttClient.connectClient()
-			self.mqttClient.subscribeToTopic(ResourceNameEnum.CDA_MGMT_STATUS_CMD_RESOURCE, \
-									callback = None, qos = ConfigConst.DEFAULT_QOS)
+			# self.mqttClient.subscribeToTopic(ResourceNameEnum.CDA_MGMT_STATUS_CMD_RESOURCE, \
+			# 						callback = None, qos = ConfigConst.DEFAULT_QOS)
 
 		logging.info("Started DeviceDataManager.")
 		
@@ -302,4 +317,16 @@ class DeviceDataManager(IDataMessageListener):
 		1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
 		2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
 		"""
-		pass
+		logging.info("Upstream transmission invoked. Checking coms integration")
+
+		if self.mqttClient:
+			if self.mqttClient.publishMessage(resource= resourceName, msg = msg):
+				logging.debug("Published incoming data to resource (MQTT): %s", str(resourceName))
+			else:
+				logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resourceName))
+
+		if self.coapClient:
+			if self.coapClient.sendPutRequest(resource= resourceName, payload= msg):
+				logging.debug("Put incoming message data to resource(CoAP): %s", str(resourceName))
+			else:
+				logging.warning("Failed to publish incoming data to resource (CoAP): %s", str(resourceName))

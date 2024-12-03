@@ -12,7 +12,7 @@
 #
 [Mqtt.GatewayService]
 credFile       = ./cred/PiotMqttLocalCred.props
-certFile       = ./cert/PiotMqttLocalCertFile.pem
+certFile       = ./certs/server.crt
 host           = localhost
 port           = 1883
 securePort     = 8883
@@ -38,10 +38,10 @@ enableCrypt    = False
 #
 [ConstrainedDevice]
 deviceLocationID = constraineddevice001
-enableEmulator   = True
-enableSenseHAT   = False
+enableEmulator   = False
+enableSenseHAT   = True
 enableMqttClient = True
-enableCoapServer = True
+enableCoapServer = False
 enableCoapClient = False
 enableSystemPerformance = True
 enableSensing    = False
