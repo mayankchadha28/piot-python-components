@@ -38,7 +38,7 @@ enableCrypt    = False
 #
 [ConstrainedDevice]
 deviceLocationID = constraineddevice001
-enableEmulator   = False
+enableEmulator   = True
 enableSenseHAT   = True
 enableMqttClient = True
 enableCoapServer = False
