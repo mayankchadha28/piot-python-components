@@ -68,14 +68,14 @@ class ActuatorAdapterManager(object):
 				
 				aType  = data.getTypeID()
 				responseData = None
-
+			
 				if aType == ConfigConst.HUMIDIFIER_ACTUATOR_TYPE and self.humidifierActuator:
 					responseData = self.humidifierActuator.updateActuator(data)
 				elif aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator:
 					responseData = self.hvacActuator.updateActuator(data)
 				elif aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator:
 					#TODO: Implement led actuator
-					# responseData = self.ledDisplayActuator.updateActuator(data)
+					responseData = self.ledDisplayActuator.updateActuator(data)
 					pass
 				else:
 					logging.warning("No valid actuator type. Ignoring actuation for type: %s", data.getTypeID())

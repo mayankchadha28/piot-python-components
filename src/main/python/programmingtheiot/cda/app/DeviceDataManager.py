@@ -197,7 +197,7 @@ class DeviceDataManager(IDataMessageListener):
 		@return boolean
 		"""
 		if data:
-			logging.debug("INcoming sensor data received(from sensor manager):", str(data))
+			logging.debug("Incoming sensor data received(from sensor manager):", str(data))
 			
 			# Optional for sensor data analysis
 			self._handleSensorDataAnalysis(data)
