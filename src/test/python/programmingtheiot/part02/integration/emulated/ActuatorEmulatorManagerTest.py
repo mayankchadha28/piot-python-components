@@ -51,7 +51,8 @@ class ActuatorEmulatorManagerTest(unittest.TestCase):
 
 	def tearDown(self):
 		pass
-
+	
+	# unittest.skip("skipped")
 	def testHumidifierEmulation(self):
 		ad = ActuatorData(typeID = ConfigConst.HUMIDIFIER_ACTUATOR_TYPE)
 		ad.setValue(50.0)

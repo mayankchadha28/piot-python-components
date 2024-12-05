@@ -35,7 +35,7 @@ class BaseActuatorSimTask():
 		"""
 		This can return the current ActuatorData response instance or a copy.
 		"""
-		pass
+		return self.latestActuatorResponse
 	
 	def getSimpleName(self) -> str:
 		return self.simpleName
@@ -72,9 +72,9 @@ class BaseActuatorSimTask():
 				
 				if curCommand == ConfigConst.COMMAND_ON:
 					#ON state
-					logging.info("Activating Actuator...")
-					statusCode = self._activateActuator(val= data.getValue(), \
-						stateData= data.getStateData)
+					logging.info("Activating Actuator...............")
+					statusCode = self._activateActuator(val= data.getValue(), stateData= data.getStateData)
+					
 					
 				elif curCommand == ConfigConst.COMMAND_OFF:
 					#OFF state
@@ -103,8 +103,6 @@ class BaseActuatorSimTask():
 			
 		return None
 
-
-		
 	def _activateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
 		"""
 		Private method for actuator ON functionality & log messages
@@ -112,7 +110,7 @@ class BaseActuatorSimTask():
 		@param val The actuation activation value to process.
 		@param stateData The string state data to use in processing the command.
 		"""
-
+		logging.debug("Entered Activate Actuator.........................")
 		msg = "\n*****"
 		msg = msg + "\n* 0 N *"
 		msg = msg + "\n*****"

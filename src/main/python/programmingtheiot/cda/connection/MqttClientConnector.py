@@ -6,7 +6,8 @@
 # implementation for the Programming the Internet of Things exercises,
 # and designed to be modified by the student as needed.
 #
-
+import os
+from pathlib import Path
 import logging
 import ssl
 import paho.mqtt.client as mqttClient
@@ -90,6 +91,11 @@ class MqttClientConnector(IPubSubClient):
 		logging.info("\tMQTT Broker Port:" + str(self.port))
 		logging.info("\tMQTT Keep Alive:" + str(self.keepAlive))
 
+		__dirname = Path.cwd().parents[6] / 'cert' / 'ca.crt'
+		print(__dirname)
+		
+#     pass
+
 
 	def connectClient(self) -> bool:
 		if not self.mqttClient:
@@ -105,7 +111,12 @@ class MqttClientConnector(IPubSubClient):
 							ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.SECURE_PORT_KEY, \
 								  ConfigConst.DEFAULT_MQTT_SECURE_PORT)
 
+					logging.info("..............")
+					self.mqttClient.enable_logger()
+					__dirname = Path.cwd().parents[6] / 'cert' / 'ca.crt'
 					self.mqttClient.tls_set(self.pemFileName, tls_version = ssl.PROTOCOL_TLS_CLIENT)
+					# self.mqttClient.tls_insecure_set(True)
+					
 			except:
 				logging.warning("Failed to enable TLS encryption. Using unencrypted connection.")
 

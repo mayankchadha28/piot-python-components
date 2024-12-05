@@ -20,6 +20,8 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
+from programmingtheiot.cda.emulated.HvacEmulatorTask import HvacEmulatorTask
+
 
 class ActuatorAdapterManager(object):
 	"""
@@ -109,10 +111,11 @@ class ActuatorAdapterManager(object):
 			self.humidifierActuator = hueClass()
 
 			# HVAC
-			hveModule = import_module('programmingtheiot.cda.emulated.HvacEmulatorTask', \
-							 'HvacEmulatorTask')
-			hveClass = getattr(hveModule, 'HvacEmulatorTask')
-			self.hvacActuator = hveClass()
+			self.hvacActuator = HvacEmulatorTask()
+			# hveModule = import_module('programmingtheiot.cda.emulated.HvacEmulatorTask', \
+			# 				 'HvacEmulatorTask')
+			# hveClass = getattr(hveModule, 'HvacEmulatorTask')
+			# self.hvacActuator = hveClass()
 
 			# LED
 			leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', \

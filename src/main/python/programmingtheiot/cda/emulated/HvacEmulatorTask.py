@@ -39,15 +39,22 @@ class HvacEmulatorTask(BaseActuatorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 
 	def _activateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		logging.debug("I am here. ..................")
+		
+		BaseActuatorSimTask._activateActuator(self, val = val, stateData= stateData)
+
 		if self.sh.screen:
 			msg = self.getSimpleName() + ' ON: ' + str(val) + 'C'
 			self.sh.screen.scroll_text(msg)
+			
 			return 0
 		else:
 			logging.warning("No SenseHat LED screen instance to write.")
 			return -1
 
 	def _deactivateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		
+		BaseActuatorSimTask._deactivateActuator(self, val = val, stateData= stateData)
 		if self.sh.screen:
 			msg = self.getSimpleName() + " OFF"
 			

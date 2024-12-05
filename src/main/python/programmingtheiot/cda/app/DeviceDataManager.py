@@ -140,7 +140,7 @@ class DeviceDataManager(IDataMessageListener):
 		logging.info("Actuator data: "+ str(data))
 
 		if data:
-			logging.info("Processing actuator command message")
+			logging.info("...........Processing actuator command message........")
 			return self.actuatorAdapterMgr.sendActuatorCommand(data)
 		else:
 			logging.warning("Incoming actuator command is invalid (null). Ignoring.")
@@ -231,7 +231,7 @@ class DeviceDataManager(IDataMessageListener):
 
 			# pass data to _handleUpstreamTransmission 
 			self._handleUpstreamTransmission(\
-				resourceName= ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg = jsonData)
+				resourceName= ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, msg = jsonData)
 			
 			return True
 		else:

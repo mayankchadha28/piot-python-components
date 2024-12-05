@@ -48,7 +48,11 @@ class ActuatorData(BaseIotData):
 
 	
 	def setAsResponse(self):
-		pass
+		"""
+		set response flat True
+		"""
+		self.isResponse = True
+		self.updateTimeStamp()
 		
 	def setStateData(self, stateData: str):
 		if stateData:
