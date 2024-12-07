@@ -12,14 +12,14 @@
 #
 [Mqtt.GatewayService]
 credFile       = ./cred/PiotMqttLocalCred.props
-certFile       = /home/mayank/ConnectedDevices/python-components/cert/ca.crt
+certFile       = /home/mayank/ConnectedDevices/python-components/cert/server.crt
 host           = localhost
 port           = 1883
 securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 60
 enableAuth     = False
-enableCrypt    = True
+enableCrypt    = False
 
 #
 # CoAP client configuration information
@@ -38,6 +38,7 @@ enableCrypt    = False
 #
 [ConstrainedDevice]
 deviceLocationID = constraineddevice001
+runForever = True
 enableEmulator   = True
 enableSenseHAT   = True
 enableMqttClient = True

@@ -13,15 +13,17 @@ configuration values or when default values may be needed.
  
 """
 
+__dirname = "/home/mayank/ConnectedDevices/python-components/config/PiotConfig.props"
 # Using the relative path for the PiotConfig.props file
-from pathlib import Path
-__dirname = Path.cwd().parents[6] / 'config' / 'PiotConfig.props'
-print(__dirname)
+# from pathlib import Path
+# __dirname = Path.cwd().parents[6] / 'config' / 'PiotConfig.props'
+# print(__dirname)
 
-# path = Path("/home/mayank/ConnectedDevices/python-components/config/PiotConfig.props")
+# path = Path(__dirname)
 # if path.exists():
-#     # print("Config File Found")
-#     pass
+#     print("Config File Found")
+# else:
+#     print("Failed to load Config File")
 
 #####
 # General Names and Defaults

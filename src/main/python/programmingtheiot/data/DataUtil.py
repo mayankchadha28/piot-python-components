@@ -34,7 +34,9 @@ class DataUtil():
 		if not data:
 			logging.debug("ActuatorData is null. returning empty string.")
 			return ""
+		logging.info("Actuator data to JSON PRE --> %s", str(data))
 		jsonData = self._generateJsonData(obj= data, useDecForFloat= False)
+		logging.info("Actuator data to JSON POST --> %s", jsonData)
 		return jsonData
 
 	
