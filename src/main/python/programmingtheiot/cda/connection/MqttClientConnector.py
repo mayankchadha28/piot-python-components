@@ -202,6 +202,8 @@ class MqttClientConnector(IPubSubClient):
 				# all data encoded in UTF-8
 				actuatorData = DataUtil().jsonToActuatorData(msg.payload.decode('utf-8'))
 
+				logging.debug("...........ACTUATOR DATA WHEN ARRIVED........"+ str(actuatorData))
+
 				self.dataMsgListener.handleActuatorCommandMessage(actuatorData)
 			except:
 				logging.exception("Failed to convert incoming actuation command payload to Actuatordata: ")

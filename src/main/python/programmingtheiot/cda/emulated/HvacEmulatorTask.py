@@ -39,7 +39,7 @@ class HvacEmulatorTask(BaseActuatorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 
 	def _activateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
-		logging.debug("I am here. ..................")
+		
 		
 		BaseActuatorSimTask._activateActuator(self, val = val, stateData= stateData)
 

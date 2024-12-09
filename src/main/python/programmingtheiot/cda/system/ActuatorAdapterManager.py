@@ -21,6 +21,7 @@ from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
 from programmingtheiot.cda.emulated.HvacEmulatorTask import HvacEmulatorTask
+from programmingtheiot.cda.emulated.LedDisplayEmulatorTask import LedDisplayEmulatorTask
 
 
 class ActuatorAdapterManager(object):
@@ -77,7 +78,10 @@ class ActuatorAdapterManager(object):
 					responseData = self.hvacActuator.updateActuator(data)
 				elif aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator:
 					#TODO: Implement led actuator
+					logging.info(".................LED Actuation..................")
+					logging.info(data)
 					responseData = self.ledDisplayActuator.updateActuator(data)
+					# responseData = self.ledDisplayActuator
 					pass
 				else:
 					logging.warning("No valid actuator type. Ignoring actuation for type: %s", data.getTypeID())
@@ -118,9 +122,10 @@ class ActuatorAdapterManager(object):
 			# self.hvacActuator = hveClass()
 
 			# LED
-			leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', \
-								   'LedDisplayEmulatorTask')
-			leClass = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
-			self.ledDisplayActuator = leClass()
+			self.ledDisplayActuator = LedDisplayEmulatorTask()
+			# leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', \
+			# 					   'LedDisplayEmulatorTask')
+			# leClass = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
+			# self.ledDisplayActuator = leClass()
 
 

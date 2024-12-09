@@ -57,6 +57,8 @@ class BaseActuatorSimTask():
 			curCommand = data.getCommand()
 			curVal = data.getValue()
 
+			logging.info(".........."+ str(curCommand)+" "+ str(curVal)+ "...........")
+
 			#check if command is repeat. if yes then skip
 			if curCommand == self.lastKnownCommand and curVal == self.lastKnownValue:
 				logging.debug(\
@@ -69,16 +71,16 @@ class BaseActuatorSimTask():
 					str(curCommand), str(curVal)
 				)
 
-				
+				logging.info(".......Current COMMAND: "+ str(curCommand)+"....")
 				if curCommand == ConfigConst.COMMAND_ON:
 					#ON state
-					logging.info("Activating Actuator...............")
+					logging.info(".......Activating Actuator...............")
 					statusCode = self._activateActuator(val= data.getValue(), stateData= data.getStateData)
 					
 					
 				elif curCommand == ConfigConst.COMMAND_OFF:
 					#OFF state
-					logging.info("Deactivating actuator...")
+					logging.info("......Deactivating actuator...")
 					statusCode = self._deactivateActuator(val= data.getValue(),\
 										    stateData=data.getStateData())
 				
@@ -110,7 +112,7 @@ class BaseActuatorSimTask():
 		@param val The actuation activation value to process.
 		@param stateData The string state data to use in processing the command.
 		"""
-		logging.debug("Entered Activate Actuator.........................")
+		logging.debug("..............Entered Activate Actuator.........................")
 		msg = "\n*****"
 		msg = msg + "\n* 0 N *"
 		msg = msg + "\n*****"
